@@ -9,7 +9,6 @@
                                  timeout
                                  disable-logging?]}]
   (let [client (WebClient.)]
-    (println "making client")
     (when request-headers
       (doseq [elem request-headers]
         (.addRequestHeader client (key elem) (val elem))))
@@ -18,9 +17,7 @@
     (when (not (= nil timeout))
       (.setTimeout client timeout))
     (when java-script?
-      (do
-      (println "enabled javascript")
-      (.setJavaScriptEnabled client java-script?)))
+      (.setJavaScriptEnabled client java-script?))
     (when (not (= nil css?))
       (.setCssEnabled client css?))
     (when disable-logging?
@@ -35,6 +32,22 @@
         (java.util.logging.Logger/getLogger "org.apache.commons.httpclient")
         (.setLevel java.util.logging.Level/OFF)))
     client))
+
+(defprotocol IWebClient
+  (page 
+    [client url]
+    [client url wait-for-javascript])
+  (close-all [client]))
+
+(extend-type WebClient
+  IWebClient
+  (page 
+    ([client url] (.getPage client url))
+    ([client url wait-for-javascript]
+      (let [result (page client url)]
+        (.waitForBackgroundJavaScript client wait-for-javascript)
+        result)))
+  (close-all [client] (.closeAllWindows client)))
 
 
       

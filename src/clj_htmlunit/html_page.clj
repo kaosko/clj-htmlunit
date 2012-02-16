@@ -2,12 +2,6 @@
   (:import [com.gargoylesoftware.htmlunit.html
             HtmlPage]))
 
-
-(defn get-page [client url]
-  (let [page (.getPage client url)]
-    (.waitForBackgroundJavaScript client 5000)
-    page))
-
 (defprotocol IHtmlPage
   (document-element [page])
   (element-by-id [page id])
@@ -24,7 +18,9 @@
   (frames [page])
   (focused-element [page])
   (title-text [page])
-  (execute-java-script! [page source]))
+  (execute-java-script! [page source])
+  (xml [page])
+  (text [page]))
 
 (extend-type HtmlPage 
   IHtmlPage
@@ -46,6 +42,8 @@
   (frames [page] (.getFrames page))
   (focused-element [page] (.getFocusedElement page))
   (title-text [page] (.getTitleText page))
-  (execute-java-script! [page source] (.executeJavaScript page source)))
+  (execute-java-script! [page source] (.executeJavaScript page source))
+  (xml [page] (.asXml page))
+  (text [page] (.asText page)))
 
 
