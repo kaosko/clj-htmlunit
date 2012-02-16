@@ -1,17 +1,31 @@
 # clj-htmlunit
 
-FIXME: write description
+protocol based wrapper for htmlunit
 
 ## Usage
 
-FIXME: write
+From the getting started page at http://htmlunit.sourceforge.net/gettingStarted.html
 
-## Installation
-
-FIXME: write
+(require '[clj-htmlunit
+          [web-client :as wc]
+          [html-page :as hp]
+          [html-element :as he]])
+          
+(let [web-client (wc/make-web-client)
+	  page (hp/get-page web-client "http://htmlunit.sourceforge.net")
+	  title-text (do 
+	  				(assert (= "HtmlUnit - Welcome to HtmlUnit" (hp/title-text page)))
+	  				(hp/title-text page))
+	  xml (do
+	  		(assert (.contains (hp/xml page) "<body class=\"composite\">"))
+	  		(hp/xml page))
+	  text (do
+	  		(assert (.contains (hp/text page) "Support for the HTTP and HTTPS protocols"))
+	  		(hp/text page))]
+	(wc/close-all web-client))
 
 ## License
 
-Copyright (C) 2010 FIXME
+Copyright (C) 2012
 
 Distributed under the Eclipse Public License, the same as Clojure.
