@@ -11,7 +11,7 @@
       "creation of webclient failed"))
 
 (deftest test-get-html-page
-  (is (hp/get-page (wc/make-web-client
+  (is (wc/page (wc/make-web-client
                      :redirect? true
                      :disable-logging? true)
                    "http://www.google.com")))
@@ -19,7 +19,7 @@
 ;;these tests rely on google staying the same
 ;;thats a terrible idea
 (deftest test-html-page
-  (let [page (hp/get-page (wc/make-web-client
+  (let [page (wc/page (wc/make-web-client
                             :redirect? true
                             :javascript? true
                             :disable-logging? true)
