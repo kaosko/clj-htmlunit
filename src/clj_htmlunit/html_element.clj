@@ -1,5 +1,5 @@
 (ns clj-htmlunit.html-element
-  (:import [com.gargoylesoftware.htmlunit.html
+  (:import [org.htmlunit.html
             HtmlElement]))
 
 
@@ -30,14 +30,11 @@
     ([element] (.click element))
     ([element shift? ctrl? alt?] (.click element shift? ctrl? alt?)))
   (double-click
-    ([element] (.doubleClick element))
-    ([element shift? ctrl? alt?] (.doubleClick element shift? ctrl? alt?)))
+    ([element] (.dblClick element))
+    ([element shift? ctrl? alt?] (.dblClick element shift? ctrl? alt?)))
   (id [element] (.getId element))
   (node-name [element] (.getNodeName element))
-  (type! 
-    ([element text] (.type element text))
-    ([element text shift? ctrl? alt?] (.type element text shift? ctrl? alt?)))
-  (element-by-id [element id] (.getElementById element id))
+  (type! ([element ^String text] (.type element text)))
   (elements-by-attribute [element element-name attribute-name attribute-value]
                          (.getElementsByAttribute element element-name attribute-name attribute-value))
   (enclosing-element [element tag-name] (.getEnclosingElement element tag-name))

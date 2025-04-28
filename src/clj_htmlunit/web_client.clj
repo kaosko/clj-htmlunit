@@ -1,6 +1,6 @@
 (ns clj-htmlunit.web-client
-  (:import [com.gargoylesoftware.htmlunit
-            WebClient]))
+  (:import [org.htmlunit WebClient]
+           [java.net URL]))
 
 (defn make-web-client [& {:keys [request-headers
                                  java-script?
@@ -13,13 +13,13 @@
       (doseq [elem request-headers]
         (.addRequestHeader client (key elem) (val elem))))
     (when (not (= nil redirect?))
-      (.setRedirectEnabled client redirect?))
+      (-> client (.getOptions) (.setRedirectEnabled redirect?)))
     (when (not (= nil timeout))
-      (.setTimeout client timeout))
+      (-> client (.getOptions) (.setTimeout timeout)))
     (when java-script?
-      (.setJavaScriptEnabled client java-script?))
+      (-> client (.getOptions) (.setJavaScriptEnabled java-script?)))
     (when (not (= nil css?))
-      (.setCssEnabled client css?))
+      (-> client (.getOptions) (.setCssEnabled css?)))
     (when disable-logging?
       (-> 
         (org.apache.commons.logging.LogFactory/getFactory)
@@ -41,13 +41,15 @@
 
 (extend-type WebClient
   IWebClient
-  (page 
-    ([client url] (.getPage client url))
+  (page
+    ([client ^String url] (.getPage client url))
+    ; there's also one with ^URL but maybe String is more useful
+    ;([client ^URL url] (.getPage client url))
     ([client url wait-for-javascript]
       (let [result (page client url)]
         (.waitForBackgroundJavaScript client wait-for-javascript)
         result)))
-  (close-all [client] (.closeAllWindows client)))
+  (close [client] (.close client)))
 
 
       
